@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طريقك إلى الهداية</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display&display=swap" rel="stylesheet">
+<style>
+body {
+    margin:0; padding:0;
+    font-family: 'SF Pro Display', sans-serif;
+    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+    color: #fff;
+    text-align:center;
+}
+.logo { width:250px; margin-top:30px; animation: zoomIn 1s; }
+@keyframes zoomIn { 0% {transform:scale(0.5)} 100%{transform:scale(1)} }
+
+h1 { font-size:36px; color:#ffd700; margin:20px; text-shadow: 2px 2px #000; }
+p { font-size:18px; color:#ccc; margin:20px auto; max-width:600px; line-height:1.5; }
+
+.buttons { display:flex; justify-content:center; gap:40px; margin-top:30px; }
+.btn { padding:15px 40px; font-size:20px; border:none; border-radius:10px; cursor:pointer; font-weight:bold;
+transition:0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+.btn-muslim { background-color:#28a745; color:white; }
+.btn-muslim:hover { background-color:#218838; transform:scale(1.05); }
+.btn-christian { background-color:#007bff; color:white; }
+.btn-christian:hover { background-color:#0056b3; transform:scale(1.05); }
+</style>
+</head>
+<body>
+
+<img src="file_00000000a4c0720a83a8ee85c7de128a.png" class="logo" alt="طريقك إلى الهداية">
+
+<h1>مرحبًا بك في موقع طريقك إلى الهداية</h1>
+<p>الهدف: التوعية الفكرية بالدين بطريقة علمية ومحترمة. اختر دينك للمتابعة.</p>
+
+<div class="buttons">
+    <button class="btn btn-muslim" onclick="chooseReligion('muslim')">مسلم ©</button>
+    <button class="btn btn-christian" onclick="chooseReligion('christian')">مسيحي ®</button>
+</div>
+
+<audio id="audioWelcome" src=""></audio>
+
+<script>
+function chooseReligion(religion){
+    const audio = document.getElementById('audioWelcome');
+    if(religion === 'muslim'){
+        alert('مرحبًا بك يا أخي المسلم، الهدف: الدعوة في الدين والتمسك بالإسلام');
+        audio.src = 'audio_muslim.mp3'; // ضع مسار الملف الصوتي للترحيب بالمسلم
+        audio.play();
+        window.location.href = 'questions.html?din=muslim';
+    } else {
+        alert('مرحبًا بك أخي المسيحي، الهدف: التوعية والتفكير في الدين، كلنا واحد لكن الهدف الإسلام');
+        audio.src = 'audio_christian.mp3'; // ضع مسار الملف الصوتي للترحيب بالمسيحي
+        audio.play();
+        window.location.href = 'questions.html?din=christian';
+    }
+}
+</script>
+
+</body>
+</html> 
