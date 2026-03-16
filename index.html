@@ -9,38 +9,26 @@
 body {
     margin:0; padding:0;
     font-family: 'SF Pro Display', sans-serif;
-    background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+    background: #000;
     color:#fff; text-align:center;
 }
 .logo-container {
-    margin-top:40px;
-    width:150px; height:150px;
+    margin-top:50px;
+    width:180px; height:180px;
     margin-left:auto; margin-right:auto;
     border-radius:50%; overflow:hidden;
     border:4px solid #ffd700;
     box-shadow:0 0 20px #ffd70050;
-    animation:zoomIn 1s ease;
 }
 .logo-container img { width:100%; height:100%; object-fit:cover; }
-@keyframes zoomIn { 0%{transform:scale(0.5)} 100%{transform:scale(1)} }
-h1 { font-size:32px; color:#ffd700; margin:20px; text-shadow:2px 2px #000; }
-p { font-size:18px; color:#ccc; margin:10px auto 30px auto; max-width:600px; line-height:1.5; }
-.buttons { display:flex; justify-content:center; gap:40px; margin-bottom:40px; }
-.btn { padding:15px 40px; font-size:20px; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition:0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+h1 { font-size:36px; color:#ffd700; margin:20px; text-shadow:2px 2px #000; }
+p { font-size:18px; color:#ccc; margin:10px auto 40px auto; max-width:600px; line-height:1.5; }
+.buttons { display:flex; justify-content:center; gap:50px; margin-bottom:40px; }
+.btn { padding:20px 50px; font-size:22px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; transition:0.3s; }
 .btn-muslim { background-color:#28a745; color:white; }
 .btn-muslim:hover { background-color:#218838; transform:scale(1.05); }
 .btn-christian { background-color:#007bff; color:white; }
 .btn-christian:hover { background-color:#0056b3; transform:scale(1.05); }
-.question-card { background:#222; margin:20px auto; padding:20px; border-radius:12px; max-width:800px; text-align:right; transition:0.3s; }
-.question-card:hover { transform:scale(1.02); box-shadow:0 0 20px rgba(255,255,255,0.3); }
-.question-card h2 { color:#ffd700; margin-bottom:10px; }
-.answer { background:#333; padding:15px; border-radius:8px; font-size:18px; line-height:1.5; color:#ffff00; text-shadow: 0 0 5px #ffff99; transition:0.3s; }
-.answer:hover { text-shadow: 0 0 15px #ffff33; }
-@media (max-width:600px) {
-    .btn { font-size:16px; padding:10px 20px; }
-    h1 { font-size:26px; }
-    .answer { font-size:16px; }
-}
 </style>
 </head>
 <body>
@@ -50,48 +38,17 @@ p { font-size:18px; color:#ccc; margin:10px auto 30px auto; max-width:600px; lin
 </div>
 
 <h1>مرحبًا بك في موقع طريقك إلى الهداية</h1>
-<p>الهدف: التوعية الفكرية بالعقيدة الإسلامية بشكل واضح ومرتب.</p>
+<p>اختر دينك لتبدأ رحلتك الفكرية والعقائدية.</p>
 
 <div class="buttons">
-    <button class="btn btn-muslim" onclick="chooseReligion('muslim')">مسلم ©</button>
-    <button class="btn btn-christian" onclick="chooseReligion('christian')">مسيحي ®</button>
+    <button class="btn btn-muslim" onclick="goToPage('muslim')">مسلم ©</button>
+    <button class="btn btn-christian" onclick="goToPage('christian')">مسيحي ®</button>
 </div>
 
-<div id="questions-container"></div>
-
 <script>
-// دالة النطق بصوت Google TTS
-function speak(text){
-    const msg = new SpeechSynthesisUtterance();
-    msg.text = text;
-    msg.lang = 'ar-SA';
-    msg.rate = 1; 
-    msg.pitch = 1;
-    window.speechSynthesis.speak(msg);
-}
-
-// اختيار الدين وعرض الأسئلة
-function chooseReligion(religion){
-    if(religion === 'muslim'){
-        speak('مرحبًا يا أخي المسلم، الهدف: الدعوة في الدين والتمسك بالعقيدة الصحيحة');
-    } else {
-        speak('مرحبًا يا أخي المسيحي، الهدف: التوعية والتفكير في العقيدة الإسلامية بشكل علمي');
-    }
-
-    // جلب JSON بعد اختيار الدين
-    fetch('islam_faith_questions.json')
-    .then(res => res.json())
-    .then(data => {
-        const container = document.getElementById('questions-container');
-        container.innerHTML = ''; // تفريغ أي محتوى سابق
-        data.forEach(q => {
-            const card = document.createElement('div');
-            card.classList.add('question-card');
-            card.innerHTML = `<h2>سؤال: ${q.question}</h2>
-                              <div class="answer"><p>${q.answer_quran}</p></div>`;
-            container.appendChild(card);
-        });
-    });
+function goToPage(religion){
+    localStorage.setItem('religion', religion); // حفظ اختيار الدين
+    window.location.href = 'questions.html';
 }
 </script>
 
