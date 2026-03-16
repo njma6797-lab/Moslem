@@ -6,22 +6,21 @@
 <title>الأسئلة والإجابات</title>
 <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display&display=swap" rel="stylesheet">
 <style>
-body { margin:0; padding:0; font-family:'SF Pro Display', sans-serif; background:#000; color:#fff; text-align:center; }
-h1 { font-size:32px; color:#ffd700; margin:20px; text-shadow:2px 2px #000; }
-.question-card { background:#222; margin:20px auto; padding:20px; border-radius:12px; max-width:800px; text-align:right; }
-.question-card h2 { color:#ffd700; margin-bottom:10px; }
-.answer { background:#333; padding:15px; border-radius:8px; font-size:18px; line-height:1.5; color:#ffff00; text-shadow:0 0 5px #ffff99; margin-bottom:10px; }
-.answer:hover { text-shadow:0 0 15px #ffff33; }
-.add-answer { margin:20px auto; max-width:800px; }
-.add-answer textarea { width:100%; height:80px; border-radius:8px; padding:10px; font-size:16px; }
-.add-answer button { padding:10px 20px; margin-top:10px; font-size:16px; border:none; border-radius:8px; cursor:pointer; background:#28a745; color:#fff; transition:0.3s; }
-.add-answer button:hover { background:#218838; transform:scale(1.05); }
+body {margin:0; padding:0; font-family:'SF Pro Display', sans-serif; background:#000; color:#fff; text-align:center;}
+h1 {font-size:24px; color:#ffd700; margin:15px;}
+.question-card {background:#222; margin:15px auto; padding:15px; border-radius:12px; max-width:800px; text-align:right;}
+.question-card h2 {color:#ffd700; font-size:16px;}
+.answer {background:#333; padding:12px; border-radius:8px; font-size:14px; line-height:1.5; color:#fff; text-align:right; margin-bottom:8px;}
+.answer .highlight {color:#ffff00; font-weight:bold; background:#333; padding:0 3px; border-radius:3px;}
+.add-answer {margin:20px auto; max-width:800px; text-align:right;}
+.add-answer textarea {width:100%; height:70px; border-radius:8px; padding:8px; font-size:14px;}
+.add-answer button {padding:8px 18px; margin-top:10px; font-size:14px; border:none; border-radius:8px; cursor:pointer; background:#28a745; color:#fff; transition:0.3s;}
+.add-answer button:hover { background:#218838; transform:scale(1.05);}
 </style>
 </head>
 <body>
 
 <h1>الأسئلة والإجابات</h1>
-
 <div id="questions-container"></div>
 
 <div class="add-answer">
@@ -31,49 +30,34 @@ h1 { font-size:32px; color:#ffd700; margin:20px; text-shadow:2px 2px #000; }
 </div>
 
 <script>
-// جلب اختيار الدين
-const religion = localStorage.getItem('religion');
-if(religion === 'muslim'){
-    speak('مرحبًا يا أخي المسلم، الهدف: الدعوة في الدين والتمسك بالعقيدة الصحيحة');
-} else if(religion === 'christian'){
-    speak('مرحبًا يا أخي المسيحي، الهدف: التوعية والتفكير في العقيدة الإسلامية بشكل علمي');
-}
+let religion = localStorage.getItem('religion') || 'muslim';
 
-// TTS
-function speak(text){
-    const msg = new SpeechSynthesisUtterance();
-    msg.text = text;
-    msg.lang = 'ar-SA';
-    msg.rate = 1;
-    msg.pitch = 1;
-    window.speechSynthesis.speak(msg);
-}
-
-// جلب JSON وعرض الأسئلة
-fetch('islam_faith_questions.json')
-.then(res => res.json())
-.then(data => {
-    const container = document.getElementById('questions-container');
-    container.innerHTML = '';
-    data.forEach(q => {
-        const card = document.createElement('div');
-        card.classList.add('question-card');
-        card.innerHTML = `<h2>سؤال: ${q.question}</h2>
-                          <div class="answer"><p>${q.answer_quran}</p></div>`;
-        container.appendChild(card);
+function loadQuestions(){
+    fetch('islam_faith_questions.json')
+    .then(res=>res.json())
+    .then(data=>{
+        const container=document.getElementById('questions-container');
+        container.innerHTML='';
+        data.forEach(q=>{
+            const card=document.createElement('div');
+            card.classList.add('question-card');
+            const ansText = religion==='muslim'? q.answer_muslim : q.answer_christian;
+            card.innerHTML = `<h2>سؤال: ${q.question}</h2><div class="answer">${ansText}</div>`;
+            container.appendChild(card);
+        });
     });
-});
+}
+loadQuestions();
 
-// إضافة إجابة جديدة
 function addAnswer(){
-    const text = document.getElementById('newAnswer').value;
-    if(text.trim() === '') return alert('اكتب الإجابة أولاً!');
-    const container = document.getElementById('questions-container');
-    const newDiv = document.createElement('div');
+    const text=document.getElementById('newAnswer').value;
+    if(text.trim()==='') return alert('اكتب الإجابة أولاً!');
+    const container=document.getElementById('questions-container');
+    const newDiv=document.createElement('div');
     newDiv.classList.add('answer');
-    newDiv.innerHTML = `<p>${text}</p>`;
+    newDiv.innerHTML=`<p>${text}</p>`;
     container.appendChild(newDiv);
-    document.getElementById('newAnswer').value = '';
+    document.getElementById('newAnswer').value='';
 }
 </script>
 
