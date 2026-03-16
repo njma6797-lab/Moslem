@@ -9,55 +9,91 @@
 body {
     margin:0; padding:0;
     font-family: 'SF Pro Display', sans-serif;
-    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
-    color: #fff;
-    text-align:center;
+    background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+    color:#fff; text-align:center;
 }
-.logo { width:250px; margin-top:30px; animation: zoomIn 1s; }
-@keyframes zoomIn { 0% {transform:scale(0.5)} 100%{transform:scale(1)} }
-
-h1 { font-size:36px; color:#ffd700; margin:20px; text-shadow: 2px 2px #000; }
-p { font-size:18px; color:#ccc; margin:20px auto; max-width:600px; line-height:1.5; }
-
-.buttons { display:flex; justify-content:center; gap:40px; margin-top:30px; }
-.btn { padding:15px 40px; font-size:20px; border:none; border-radius:10px; cursor:pointer; font-weight:bold;
-transition:0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+.logo-container {
+    margin-top:40px;
+    width:150px; height:150px;
+    margin-left:auto; margin-right:auto;
+    border-radius:50%; overflow:hidden;
+    border:4px solid #ffd700;
+    box-shadow:0 0 20px #ffd70050;
+    animation:zoomIn 1s ease;
+}
+.logo-container img { width:100%; height:100%; object-fit:cover; }
+@keyframes zoomIn { 0%{transform:scale(0.5)} 100%{transform:scale(1)} }
+h1 { font-size:32px; color:#ffd700; margin:20px; text-shadow:2px 2px #000; }
+p { font-size:18px; color:#ccc; margin:10px auto 30px auto; max-width:600px; line-height:1.5; }
+.buttons { display:flex; justify-content:center; gap:40px; margin-bottom:40px; }
+.btn { padding:15px 40px; font-size:20px; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition:0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
 .btn-muslim { background-color:#28a745; color:white; }
 .btn-muslim:hover { background-color:#218838; transform:scale(1.05); }
 .btn-christian { background-color:#007bff; color:white; }
 .btn-christian:hover { background-color:#0056b3; transform:scale(1.05); }
+.question-card { background:#222; margin:20px auto; padding:20px; border-radius:12px; max-width:800px; text-align:right; transition:0.3s; }
+.question-card:hover { transform:scale(1.02); box-shadow:0 0 20px rgba(255,255,255,0.3); }
+.question-card h2 { color:#ffd700; margin-bottom:10px; }
+.answer { background:#333; padding:15px; border-radius:8px; font-size:18px; line-height:1.5; color:#ffff00; text-shadow: 0 0 5px #ffff99; transition:0.3s; }
+.answer:hover { text-shadow: 0 0 15px #ffff33; }
+@media (max-width:600px) {
+    .btn { font-size:16px; padding:10px 20px; }
+    h1 { font-size:26px; }
+    .answer { font-size:16px; }
+}
 </style>
 </head>
 <body>
 
-<img src="file_00000000a4c0720a83a8ee85c7de128a.png" class="logo" alt="طريقك إلى الهداية">
+<div class="logo-container">
+    <img src="file_00000000a4c0720a83a8ee85c7de128a.png" alt="طريقك إلى الهداية">
+</div>
 
 <h1>مرحبًا بك في موقع طريقك إلى الهداية</h1>
-<p>الهدف: التوعية الفكرية بالدين بطريقة علمية ومحترمة. اختر دينك للمتابعة.</p>
+<p>الهدف: التوعية الفكرية بالعقيدة الإسلامية بشكل واضح ومرتب.</p>
 
 <div class="buttons">
     <button class="btn btn-muslim" onclick="chooseReligion('muslim')">مسلم ©</button>
     <button class="btn btn-christian" onclick="chooseReligion('christian')">مسيحي ®</button>
 </div>
 
-<audio id="audioWelcome" src=""></audio>
+<div id="questions-container"></div>
 
 <script>
+// دالة النطق بصوت Google TTS
+function speak(text){
+    const msg = new SpeechSynthesisUtterance();
+    msg.text = text;
+    msg.lang = 'ar-SA';
+    msg.rate = 1; 
+    msg.pitch = 1;
+    window.speechSynthesis.speak(msg);
+}
+
+// اختيار الدين وعرض الأسئلة
 function chooseReligion(religion){
-    const audio = document.getElementById('audioWelcome');
     if(religion === 'muslim'){
-        alert('مرحبًا بك يا أخي المسلم، الهدف: الدعوة في الدين والتمسك بالإسلام');
-        audio.src = 'audio_muslim.mp3'; // ضع مسار الملف الصوتي للترحيب بالمسلم
-        audio.play();
-        window.location.href = 'questions.html?din=muslim';
+        speak('مرحبًا يا أخي المسلم، الهدف: الدعوة في الدين والتمسك بالعقيدة الصحيحة');
     } else {
-        alert('مرحبًا بك أخي المسيحي، الهدف: التوعية والتفكير في الدين، كلنا واحد لكن الهدف الإسلام');
-        audio.src = 'audio_christian.mp3'; // ضع مسار الملف الصوتي للترحيب بالمسيحي
-        audio.play();
-        window.location.href = 'questions.html?din=christian';
+        speak('مرحبًا يا أخي المسيحي، الهدف: التوعية والتفكير في العقيدة الإسلامية بشكل علمي');
     }
+
+    // جلب JSON بعد اختيار الدين
+    fetch('islam_faith_questions.json')
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = ''; // تفريغ أي محتوى سابق
+        data.forEach(q => {
+            const card = document.createElement('div');
+            card.classList.add('question-card');
+            card.innerHTML = `<h2>سؤال: ${q.question}</h2>
+                              <div class="answer"><p>${q.answer_quran}</p></div>`;
+            container.appendChild(card);
+        });
+    });
 }
 </script>
 
 </body>
-</html> 
+</html>
